@@ -12,7 +12,7 @@ const CONFIG = {
 
     // Firebase Configuration
     FIREBASE: {
-        apiKey: "AIzaSyB3GnVYhABKYaldONE3KU2BOYUvQXzEUZU",
+        apiKey: "FIREBASE_API_KEY",
         authDomain: "disaster-aid-punjab.firebaseapp.com",
         databaseURL: "https://disaster-aid-punjab-default-rtdb.firebaseio.com",
         projectId: "disaster-aid-punjab",
