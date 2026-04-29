@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punjab Disaster Aid - Help Flood Victims</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-hands-helping"></i> Punjab Disaster Aid</h1>
+                <p>Help flood victims across Punjab - Add your needs, offer support</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <div class="location-selector">
+                    <div class="select-group">
+                        <label for="state-select">State:</label>
+                        <select id="state-select" disabled>
+                            <option value="punjab">Punjab</option>
+                        </select>
+                    </div>
+                    
+                    <div class="select-group">
+                        <label for="district-select">District:</label>
+                        <select id="district-select">
+                            <option value="">Select District</option>
+                            <option value="amritsar">Amritsar</option>
+                            <option value="barnala">Barnala</option>
+                            <option value="bathinda">Bathinda</option>
+                            <option value="faridkot">Faridkot</option>
+                            <option value="fatehgarh-sahib">Fatehgarh Sahib</option>
+                            <option value="fazilka">Fazilka</option>
+                            <option value="ferozepur">Ferozepur</option>
+                            <option value="gurdaspur">Gurdaspur</option>
+                            <option value="hoshiarpur">Hoshiarpur</option>
+                            <option value="jalandhar">Jalandhar</option>
+                            <option value="kapurthala">Kapurthala</option>
+                            <option value="ludhiana">Ludhiana</option>
+                            <option value="mansa">Mansa</option>
+                            <option value="moga">Moga</option>
+                            <option value="muktsar">Muktsar</option>
+                            <option value="pathankot">Pathankot</option>
+                            <option value="patiala">Patiala</option>
+                            <option value="rupnagar">Rupnagar</option>
+                            <option value="sahibzada-ajit-singh-nagar">Sahibzada Ajit Singh Nagar</option>
+                            <option value="sangrur">Sangrur</option>
+                            <option value="shahid-bhagat-singh-nagar">Shahid Bhagat Singh Nagar</option>
+                            <option value="tarn-taran">Tarn Taran</option>
+                        </select>
+                    </div>
+                    
+                    <div class="select-group">
+                        <label for="village-select">Village:</label>
+                        <select id="village-select">
+                            <option value="">Select Village</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="add-pin-btn" class="btn btn-primary">
+                        <i class="fas fa-map-marker-alt"></i> Add Need Pin
+                    </button>
+                    <button id="my-location-btn" class="btn btn-secondary">
+                        <i class="fas fa-location-arrow"></i> My Location
+                    </button>
+                    <button id="filter-btn" class="btn btn-outline">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button id="reset-view-btn" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Reset View
+                    </button>
+                </div>
+
+                <div class="severity-filter" id="severity-filter" style="display: none;">
+                    <label>Filter by Severity:</label>
+                    <div class="severity-options">
+                        <label><input type="checkbox" value="critical" checked> Critical</label>
+                        <label><input type="checkbox" value="high" checked> High</label>
+                        <label><input type="checkbox" value="medium" checked> Medium</label>
+                        <label><input type="checkbox" value="low" checked> Low</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="map-overlay">
+                    <div class="map-stats">
+                        <span id="pin-count">0</span> active needs
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal for Adding Pins -->
+        <div id="pin-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add Need Pin</h2>
+                    <button class="close-btn" id="close-pin-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="pin-form">
+                        <div class="form-group">
+                            <label for="pin-title">Title:</label>
+                            <input type="text" id="pin-title" required placeholder="Brief description of need">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pin-description">Description:</label>
+                            <textarea id="pin-description" required placeholder="Detailed description of the disaster impact and specific needs"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pin-severity">Severity:</label>
+                            <select id="pin-severity" required>
+                                <option value="critical">Critical - Immediate help needed</option>
+                                <option value="high">High - Urgent help needed</option>
+                                <option value="medium">Medium - Help needed soon</option>
+                                <option value="low">Low - General assistance</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pin-contact">Contact (Optional):</label>
+                            <input type="text" id="pin-contact" placeholder="Phone number or contact info">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pin-media">Add Media (Optional):</label>
+                            <input type="file" id="pin-media" accept="image/*,video/*" multiple>
+                            <div id="media-preview" class="media-preview"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" id="cancel-pin" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Pin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Pin Details -->
+        <div id="pin-details-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="pin-details-title">Need Details</h2>
+                    <button class="close-btn" id="close-details-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="pin-details-content"></div>
+                    <div class="offer-help-section">
+                        <h3>Offer Help</h3>
+                        <form id="offer-form">
+                            <div class="form-group">
+                                <label for="offer-name">Your Name:</label>
+                                <input type="text" id="offer-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="offer-contact">Contact:</label>
+                                <input type="text" id="offer-contact" required placeholder="Phone or email">
+                            </div>
+                            <div class="form-group">
+                                <label for="offer-message">How can you help:</label>
+                                <textarea id="offer-message" required placeholder="Describe the help you can provide"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Offer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

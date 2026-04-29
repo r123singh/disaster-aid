@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punjab Disaster Aid - Setup Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .config-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Punjab Disaster Aid - Setup Test</h1>
+    <p>This page helps you verify that your disaster aid application is properly configured.</p>
+
+    <div class="test-section info">
+        <h3>📋 Configuration Check</h3>
+        <p>Checking your configuration settings...</p>
+        <div id="config-status"></div>
+    </div>
+
+    <div class="test-section info">
+        <h3>🗺️ Leaflet/OpenStreetMap Test</h3>
+        <p>Testing Leaflet integration with OpenStreetMap...</p>
+        <div id="map-status"></div>
+        <button onclick="testMap()">Test Map Integration</button>
+    </div>
+
+    <div class="test-section info">
+        <h3>🔥 Firebase Test</h3>
+        <p>Testing Firebase integration...</p>
+        <div id="firebase-status"></div>
+        <button onclick="testFirebase()">Test Firebase Connection</button>
+    </div>
+
+    <div class="test-section info">
+        <h3>📍 Geolocation Test</h3>
+        <p>Testing location services...</p>
+        <div id="geolocation-status"></div>
+        <button onclick="testGeolocation()">Test Location Access</button>
+    </div>
+
+    <div class="test-section info">
+        <h3>💾 Local Storage Test</h3>
+        <p>Testing local storage functionality...</p>
+        <div id="storage-status"></div>
+        <button onclick="testLocalStorage()">Test Local Storage</button>
+    </div>
+
+    <div class="test-section warning">
+        <h3>⚠️ Current Configuration</h3>
+        <p>Your current configuration (check if API keys are set):</p>
+        <div class="config-display" id="config-display"></div>
+    </div>
+
+    <div class="test-section success">
+        <h3>✅ Next Steps</h3>
+        <p>If all tests pass, your application is ready for deployment!</p>
+        <ul>
+            <li>✅ Configure API keys in config.js</li>
+            <li>✅ Upload files to GitHub repository</li>
+            <li>✅ Enable GitHub Pages</li>
+            <li>✅ Test the live application</li>
+        </ul>
+        <a href="index.html" target="_blank">
+            <button>🚀 Open Main Application</button>
+        </a>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Test configuration
+        function testConfiguration() {
+            const statusDiv = document.getElementById('config-status');
+            const configDiv = document.getElementById('config-display');
+            
+            // Display current configuration
+            configDiv.textContent = JSON.stringify(CONFIG, null, 2);
+            
+            // Check if Firebase API key is set
+            const firebaseKey = CONFIG.FIREBASE.apiKey;
+            
+            if (firebaseKey === 'YOUR_FIREBASE_API_KEY') {
+                statusDiv.innerHTML = '<div class="error">❌ Firebase API key not configured</div>';
+            } else {
+                statusDiv.innerHTML = '<div class="success">✅ Firebase API key configured</div>';
+            }
+            
+            statusDiv.innerHTML += '<div class="success">✅ Leaflet/OpenStreetMap ready (no API key needed)</div>';
+        }
+
+        // Test Map
+        function testMap() {
+            const statusDiv = document.getElementById('map-status');
+            
+            // Test if Leaflet is loaded
+            if (typeof L !== 'undefined') {
+                statusDiv.innerHTML = '<div class="success">✅ Leaflet library loaded successfully</div>';
+                
+                // Test OpenStreetMap tile server
+                fetch('https://tile.openstreetmap.org/7/54/25.png')
+                    .then(response => {
+                        if (response.ok) {
+                            statusDiv.innerHTML += '<div class="success">✅ OpenStreetMap tiles accessible</div>';
+                        } else {
+                            statusDiv.innerHTML += '<div class="error">❌ OpenStreetMap tiles not accessible</div>';
+                        }
+                    })
+                    .catch(error => {
+                        statusDiv.innerHTML += '<div class="error">❌ OpenStreetMap connection failed: ' + error.message + '</div>';
+                    });
+            } else {
+                statusDiv.innerHTML = '<div class="error">❌ Leaflet library not loaded</div>';
+            }
+        }
+
+        // Test Firebase
+        function testFirebase() {
+            const statusDiv = document.getElementById('firebase-status');
+            const apiKey = CONFIG.FIREBASE.apiKey;
+            
+            if (apiKey === 'YOUR_FIREBASE_API_KEY') {
+                statusDiv.innerHTML = '<div class="error">❌ Firebase API key not configured</div>';
+                return;
+            }
+            
+            // Test Firebase connection
+            const testUrl = `https://${CONFIG.FIREBASE.projectId}.firebaseio.com/.json`;
+            fetch(testUrl)
+                .then(response => {
+                    if (response.ok) {
+                        statusDiv.innerHTML = '<div class="success">✅ Firebase connection successful</div>';
+                    } else {
+                        statusDiv.innerHTML = '<div class="error">❌ Firebase connection failed</div>';
+                    }
+                })
+                .catch(error => {
+                    statusDiv.innerHTML = '<div class="error">❌ Firebase connection failed: ' + error.message + '</div>';
+                });
+        }
+
+        // Test Geolocation
+        function testGeolocation() {
+            const statusDiv = document.getElementById('geolocation-status');
+            
+            if (!navigator.geolocation) {
+                statusDiv.innerHTML = '<div class="error">❌ Geolocation not supported</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<div class="info">📍 Requesting location access...</div>';
+            
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    statusDiv.innerHTML = `<div class="success">✅ Location access granted (${lat.toFixed(4)}, ${lng.toFixed(4)})</div>`;
+                },
+                error => {
+                    statusDiv.innerHTML = `<div class="error">❌ Location access denied: ${error.message}</div>`;
+                },
+                { timeout: 10000 }
+            );
+        }
+
+        // Test Local Storage
+        function testLocalStorage() {
+            const statusDiv = document.getElementById('storage-status');
+            
+            try {
+                localStorage.setItem('test', 'test-value');
+                const testValue = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (testValue === 'test-value') {
+                    statusDiv.innerHTML = '<div class="success">✅ Local storage working</div>';
+                } else {
+                    statusDiv.innerHTML = '<div class="error">❌ Local storage not working</div>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="error">❌ Local storage not available</div>';
+            }
+        }
+
+        // Run initial tests
+        document.addEventListener('DOMContentLoaded', function() {
+            testConfiguration();
+            testLocalStorage();
+        });
+    </script>
+</body>
+</html>

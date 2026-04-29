@@ -1,0 +1,42 @@
+{
+  "name": "punjab-disaster-aid",
+  "version": "1.0.0",
+  "description": "A map-based disaster relief coordination application for Punjab flood victims",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080 -o",
+    "test": "echo \"Open test.html in your browser to test the setup\"",
+    "deploy": "echo \"Follow the instructions in deploy.md to deploy to GitHub Pages\""
+  },
+  "keywords": [
+    "disaster-relief",
+    "flood-aid",
+    "punjab",
+    "mapbox",
+    "firebase",
+    "emergency-response",
+    "crowdsourcing",
+    "geolocation"
+  ],
+  "author": "Disaster Aid Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/punjab-disaster-aid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/punjab-disaster-aid/issues"
+  },
+  "homepage": "https://yourusername.github.io/punjab-disaster-aid",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
